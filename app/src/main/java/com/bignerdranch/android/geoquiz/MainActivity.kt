@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.PersistableBundle
 import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
+import android.view.Gravity
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
@@ -52,6 +53,7 @@ class MainActivity : AppCompatActivity() {
         nextButton.setOnClickListener {
             quizViewModel.moveToNext()
            updateQuestion()
+            quizViewModel.isCheater = false
         }
         cheatButton.setOnClickListener {
             //Начало CreateActivity
@@ -70,6 +72,7 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == REQUEST_CODE_CHEAT) {
             quizViewModel.isCheater = data?.getBooleanExtra(EXTRA_ANSWER_SHOWN, false) ?: false
         }
+        if (resultCode == Activity.RESULT_OK) quizViewModel.isCheaterIndex ++
     }
     override fun onStart() {
         super.onStart()
@@ -104,10 +107,14 @@ class MainActivity : AppCompatActivity() {
     private fun checkAnswer(userAnswer: Boolean) {
         val correntAnswer = quizViewModel.currentQuestionAnswer
         val messageResId = when {
-            quizViewModel.isCheater -> R.string.judgment_toast
+            //quizViewModel.isCheater -> R.string.judgment_toast
             userAnswer == correntAnswer -> R.string.correct_toast
             else -> R.string.incorrect_toast
         }
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show()
+
+        if (quizViewModel.isCheater) {
+            Toast.makeText(this, "Вы использовали чит ${quizViewModel.isCheaterIndex} раз", Toast.LENGTH_SHORT).show()
+        }
     }
 }
