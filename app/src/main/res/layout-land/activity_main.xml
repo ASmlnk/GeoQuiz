@@ -33,12 +33,28 @@
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/cheat_button"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center_horizontal"
-        android:text="@string/cheat_button"/>
+        android:layout_gravity="bottom|center_horizontal">
+
+        <Button
+            android:id="@+id/cheat_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:text="@string/cheat_button"/>
+
+        <TextView
+            android:id="@+id/cheat_index"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:padding="24dp"
+            tools:text="CheatIndex" />
+
+    </LinearLayout>
 
     <Button
         android:id="@+id/next_button"

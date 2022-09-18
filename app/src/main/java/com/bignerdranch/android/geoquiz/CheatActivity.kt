@@ -38,6 +38,8 @@ class CheatActivity : AppCompatActivity() {
 
         versionAPITextView.append("API Level ${Build.VERSION.SDK_INT}")
 
+        if (quizViewModel.cheaterIndexAttempts  <= 0) showAnswerButton.setEnabled(true)
+
         showAnswerButton.setOnClickListener {
           // val answerText = when {
              // answerIsTrue -> R.string.true_button
