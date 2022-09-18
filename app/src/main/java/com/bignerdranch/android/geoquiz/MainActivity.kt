@@ -6,16 +6,13 @@ import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.os.PersistableBundle
 import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
-import android.view.Gravity
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
-import java.lang.Exception
 
 private const val TAG = "MainActivity"
 private const val KEY_INDEX = "index"
@@ -28,6 +25,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var nextButton: Button
     private lateinit var cheatButton: Button
     private lateinit var questionTextView: TextView
+    private lateinit var cheatIndexText: TextView
 
     private val quizViewModel: QuizViewModel by lazy {
         ViewModelProvider(this)[QuizViewModel::class.java]
@@ -48,7 +46,9 @@ class MainActivity : AppCompatActivity() {
         nextButton = findViewById(R.id.next_button)
         cheatButton = findViewById(R.id.cheat_button)
         questionTextView = findViewById(R.id.question_text_view)
+        cheatIndexText = findViewById(R.id.cheat_index)
 
+        cheatIndexText.setText("У вас есть ${quizViewModel.cheaterIndexAttempts} подсказки")
         trueButton.setOnClickListener { view: View ->
             checkAnswer(true)
         }
@@ -59,6 +59,8 @@ class MainActivity : AppCompatActivity() {
             quizViewModel.moveToNext()
            updateQuestion()
             quizViewModel.isCheater = false
+            cheatIndexText.setText("У вас есть ${quizViewModel.cheaterIndexAttempts} подсказки")
+            if(quizViewModel.cheaterIndexAttempts <= 0) cheatButton.isEnabled = false
         }
         cheatButton.setOnClickListener { view ->
             //Начало CreateActivity
@@ -83,7 +85,10 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == REQUEST_CODE_CHEAT) {
             quizViewModel.isCheater = data?.getBooleanExtra(EXTRA_ANSWER_SHOWN, false) ?: false
         }
-        if (resultCode == Activity.RESULT_OK) quizViewModel.isCheaterIndex ++
+        if (resultCode == Activity.RESULT_OK) {
+            quizViewModel.isCheaterIndex ++
+            quizViewModel.cheaterIndexAttempts --
+        }
     }
     override fun onStart() {
         super.onStart()
@@ -127,5 +132,6 @@ class MainActivity : AppCompatActivity() {
         if (quizViewModel.isCheater) {
             Toast.makeText(this, "Вы использовали чит ${quizViewModel.isCheaterIndex} раз", Toast.LENGTH_SHORT).show()
         }
+
     }
 }
